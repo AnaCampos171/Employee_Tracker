@@ -1,7 +1,11 @@
+DROP DATABASE IF EXISTS company_db;
+CREATE DATABASE company_db;
+USE company_db;
+
 -- Define the department table
 CREATE TABLE department (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(30) -
+    name VARCHAR(30) 
 );
 
 -- Define the role table
@@ -23,3 +27,4 @@ CREATE TABLE employee (
     FOREIGN KEY (role_id) REFERENCES role(id), -- Foreign key constraint to ensure referential integrity
     FOREIGN KEY (manager_id) REFERENCES employee(id) 
 );
+

@@ -8,8 +8,9 @@ const connection = mysql.createConnection({
   database: 'company_db'
 });
 
-module.exports = db;
 connection.connect((err) => {
   if (err) throw err;
   console.log('Connected to the database!');
 });
+
+module.exports = connection;
