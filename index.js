@@ -129,35 +129,54 @@ function addDepartment() {
       );
     });
 }
-//add new role
+//add new role--- update to ask for department not department id!
 function addRole() {
-  inquirer
-    .prompt([
-      {
-        message: 'Enter the title of the role:',
-        type: 'input',
-        name: 'title'
-      },
-      {
-        message: 'Enter the salary of the role:',
-        type: 'number',
-        name: 'salary'
-      },
-      {
-       
+  // Query the database to get a list of all department names
+  connection.query("SELECT name FROM department", function(err, data) {
+    if (err) throw err;
 
-            message: "Enter department ID:",
-            type: "number",
-            name: "department_id"
+    // Map the results to an array of department names
+    const departmentNames = data.map(row => row.name);
+
+    inquirer
+      .prompt([
+        {
+          message: 'Enter the title of the role:',
+          type: 'input',
+          name: 'title'
+        },
+        {
+          message: 'Enter the salary of the role:',
+          type: 'number',
+          name: 'salary'
+        },
+        {
+          message: 'Select the department for the role:',
+          type: 'list',
+          name: 'departmentName',
+          choices: departmentNames
         }
-    ]).then(function (response) {
-        connection.query("INSERT INTO roles (title, salary,department_id) values (?, ?, ?)", [response.title, response.salary, response.department_id], function (err, data) {
-            console.table(data);
-        })
-        askQuestions();
-    })
+      ])
+      .then(function (response) {
+        // Query the database to get the department ID for the selected department name
+        connection.query("SELECT id FROM department WHERE name = ?", [response.departmentName], function (err, data) {
+          if (err) throw err;
 
+          const departmentId = data[0].id;
+
+          // Insert the new role into the database with the selected department ID
+          connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [response.title, response.salary, departmentId], function (err, data) {
+            if (err) throw err;
+
+            console.log(`${data.affectedRows} role added!\n`);
+
+            askQuestions();
+          });
+        });
+      });
+  });
 }
+
 
 function updateEmployeeRole() {
     inquirer.prompt([
