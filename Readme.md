@@ -25,5 +25,6 @@ N/A
 https://github.com/AnaCampos171/Employee_Tracker
 
 ## Link to a video walkthrough demonstrating app functionality: 
+https://drive.google.com/file/d/1XF3tqgQyVMsncW1_ed4DfbLybpfeTjMp/view
 
 

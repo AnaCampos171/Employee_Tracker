@@ -176,25 +176,42 @@ function addRole() {
       });
   });
 }
-
+//update role
 
 function updateEmployeeRole() {
-    inquirer.prompt([
-        {
-            message: "Which employee would you like to update? ",
-            type: "input",
-            name: "name"
-        }, {
-            message: "Enter the new role ID:",
-            type: "number",
-            name: "role_id"
-        }
-    ]).then(function (response) {
-        connection.query("UPDATE employee SET role_id = ? WHERE first_name = ?", [response.role_id, response.name], function (err, data) {
-            console.table(data);
-        })
-        askQuestions();
-    })
+  inquirer.prompt([
+    {
+      message: "Which employee would you like to update?",
+      type: "input",
+      name: "employeeName",
+    },
+    {
+      message: "Enter the new role:",
+      type: "input",
+      name: "newRole",
+    },
+  ]).then(function (response) {
+    // Get the role ID from the database based on the entered role title
+    connection.query(
+      "SELECT id FROM role WHERE title = ?",
+      [response.newRole],
+      function (err, data) {
+        if (err) throw err;
+        const roleId = data[0].id;
 
+        // Update the employee's role ID in the database
+        connection.query(
+          "UPDATE employee SET role_id = ? WHERE first_name = ?",
+          [roleId, response.employeeName],
+          function (err, data) {
+            if (err) throw err;
+            console.log("Employee role updated!");
+            askQuestions();
+          }
+        );
+      }
+    );
+  });
 }
+
 
