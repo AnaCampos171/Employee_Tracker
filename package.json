@@ -4,15 +4,17 @@
     "description": "a command-line application to manage a company's employee database.",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "init-db": "mysql -u root -p < db/schema.sql"
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "init-db": "mysql -u root -p < db/schema.sql",
+      "seed-db": "mysql -u root -p company_db < db/seeds.sql"
     },
     "author": "Ana Campos",
     "license": "ISC",
     "dependencies": {
-        "console.table": "^0.10.0",
-        "inquirer": "^8.2.4",
-        "mysql2": "^2.3.3"
+      "console.table": "^0.10.0",
+      "inquirer": "^8.2.4",
+      "mysql2": "^2.3.3"
     }
-}
+  }
+  
 

@@ -1,14 +1,16 @@
+//Import modules
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const table = require('console.table');
+//database connection
 const connection = require('./db/connection');
-
+//connect to database and ask questions
 connection.connect(err => {
   if (err) throw err;
   console.log(`connected as id ${connection.threadId}\n`);
   askQuestions();
 });
-
+//ask user what they would like to do with the database
 function askQuestions() {
   inquirer
     .prompt({
@@ -21,13 +23,13 @@ function askQuestions() {
         'Add department',
         'Add role',
         'Update employee role',
-        'Quit'
+        'End'
       ],
       name: 'choice'
     })
     .then(answer => {
       console.log(answer.choice);
-      switch (answer.choice) {
+      switch (answer.choice) { 
         case 'View all employees':
           viewEmployees();
           break;
@@ -58,7 +60,7 @@ function askQuestions() {
       }
     });
 }
-
+//view employees in database
 function viewEmployees() {
   connection.query('SELECT * FROM employee', (err, res) => {
     if (err) throw err;
@@ -66,7 +68,7 @@ function viewEmployees() {
     askQuestions();
   });
 }
-
+//view departments
 function viewDepartments() {
   connection.query('SELECT * FROM department', (err, res) => {
     if (err) throw err;
@@ -74,51 +76,45 @@ function viewDepartments() {
     askQuestions();
   });
 }
-
+//add employee
 function addEmployee() {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'firstName',
-        message: "What is the employee's first name?"
+  inquirer.prompt([{
+          type: "input",
+          name: "firstName",
+          message: "What is the employees first name?"
       },
       {
-        type: 'input',
-        name: 'lastName',
-        message: "What is the employee's last name?"
+          type: "input",
+          name: "lastName",
+          message: "What is the employees last name?"
       },
       {
-        type: 'number',
-        name: 'roleId',
-        message: "What is the employee's role ID?"
+          type: "number",
+          name: "roleId",
+          message: "What is the employees role ID"
       },
       {
-        type: 'number',
-        name: 'managerId',
-        message: "What is the employee's manager's ID?"
+          type: "number",
+          name: "managerId",
+          message: "What is the employees manager's ID?"
       }
-    ])
-    .then(answer => {
-      connection.query(
-        'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
-        [answer.firstName, answer.lastName, answer.roleId, answer.managerId],
-        (err, res) => {
+  ]).then(function(res) {
+      connection.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [res.firstName, res.lastName, res.roleId, res.managerId], function(err, data) {
           if (err) throw err;
-          console.log('Successfully Inserted');
+          console.table("Success!");
           askQuestions();
-        }
-      );
-    });
+      })
+  })
 }
 
+//add new department
 function addDepartment() {
   inquirer
     .prompt([
       {
         type: 'input',
         name: 'name',
-        message: 'What is the name of the department?'
+        message: 'What is the department name ?'
       }
     ])
     .then(answer => {
@@ -133,7 +129,7 @@ function addDepartment() {
       );
     });
 }
-
+//add new role
 function addRole() {
   inquirer
     .prompt([
@@ -150,7 +146,7 @@ function addRole() {
       {
        
 
-            message: "enter department ID:",
+            message: "Enter department ID:",
             type: "number",
             name: "department_id"
         }
@@ -166,11 +162,11 @@ function addRole() {
 function updateEmployeeRole() {
     inquirer.prompt([
         {
-            message: "which employee would you like to update? ",
+            message: "Which employee would you like to update? ",
             type: "input",
             name: "name"
         }, {
-            message: "enter the new role ID:",
+            message: "Enter the new role ID:",
             type: "number",
             name: "role_id"
         }
@@ -182,3 +178,4 @@ function updateEmployeeRole() {
     })
 
 }
+
